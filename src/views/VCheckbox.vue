@@ -1,0 +1,128 @@
+<template>
+    <div class="md-checkbox md-checkbox-inline">
+        <input :id="'todo'+id" type="checkbox" v-model="checked" @click="updateCheck">
+        <label :for="'todo'+id">{{text}}</label>
+    </div>
+</template>
+
+<script>
+    export default {
+        name: "VCheckbox",
+        props: ['id', 'isChecked', 'text'],
+        data() {
+            return {
+                checked: this.isChecked
+            }
+        },
+        methods: {
+            updateCheck() {
+                this.$emit('changedCheckboxStatus', this.id, this.checked)
+            }
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+    $md-checkbox-checked-color: #1e90ff;
+    $md-checkbox-border-color: rgba(0, 0, 0, 0.54);
+    $md-checkbox-border-color-disabled: rgba(0, 0, 0, 0.26);
+    $md-checkbox-checked-color-disabled: rgba(0, 0, 0, 0.26);
+
+    $md-checkbox-margin: 1em 0;
+    $md-checkbox-size: 1.25em;
+    $md-checkbox-padding: .25em;
+    $md-checkbox-border-width: 2px;
+    $md-checkbox-border-radius: 0.125em;
+    $md-checkmark-width: 0.125em;
+    $md-checkmark-color: #fff;
+    $md-checkbox-label-padding: .75em;
+
+    .md-checkbox {
+        position: relative;
+        margin: $md-checkbox-margin;
+        text-align: left;
+        font-size: 16px;
+
+        &.md-checkbox-inline {
+            display: inline-block;
+        }
+
+        label {
+            cursor: pointer;
+            display: inline;
+            line-height: $md-checkbox-size;
+            vertical-align: top;
+            clear: both;
+            padding-left: 1px;
+
+            &:not(:empty) {
+                padding-left: $md-checkbox-label-padding;
+            }
+
+            &:before, &:after {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            &:before {
+                // box
+                width: $md-checkbox-size;
+                height: $md-checkbox-size;
+                background: #fff;
+                border: $md-checkbox-border-width solid $md-checkbox-border-color;
+                border-radius: $md-checkbox-border-radius;
+                cursor: pointer;
+                transition: background .3s;
+            }
+
+            &:after {
+                // checkmark
+            }
+        }
+
+        input[type="checkbox"] {
+            outline: 0;
+            visibility: hidden;
+            width: $md-checkbox-size;
+            margin: 0;
+            display: block;
+            float: left;
+            font-size: inherit;
+
+            &:checked {
+                + label:before {
+                    background: $md-checkbox-checked-color;
+                    border: none;
+                }
+
+                + label:after {
+
+                    $md-checkmark-size: $md-checkbox-size - 2 * $md-checkbox-padding;
+
+                    transform: translate($md-checkbox-padding, ($md-checkbox-size / 2) - ($md-checkmark-size / 2.6)) rotate(-45deg);
+                    width: $md-checkmark-size;
+                    height: $md-checkmark-size / 2;
+
+                    border: $md-checkmark-width solid $md-checkmark-color;
+                    border-top-style: none;
+                    border-right-style: none;
+                }
+            }
+
+            &:disabled {
+                + label:before {
+                    border-color: $md-checkbox-border-color-disabled;
+                }
+
+                &:checked {
+                    + label:before {
+                        background: $md-checkbox-checked-color-disabled;
+                    }
+                }
+            }
+        }
+
+    }
+</style>

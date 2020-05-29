@@ -1,18 +1,37 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <Card class="mb-10">
+      <AddTodoButton/>
+    </Card>
+
+    <Card class="mb-10">
+      <Todo/>
+    </Card>
+
+    <Card class="mb-10">
+      <AddTodoButton/>
+    </Card>
+    <popup>
+      asdasdas
+    </popup>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import Card from "@/components/Card.vue";
+import AddTodoButton from "@/components/AddTodoButton";
+import Todo from "@/components/Todo";
+import Popup from "@/components/Popup";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld
+    Popup,
+    Todo,
+    AddTodoButton,
+    Card
   }
 };
 </script>
+
