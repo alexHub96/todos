@@ -79,11 +79,11 @@ export default {
 
   beforeRouteLeave(to, from, next) {
     if (this.stateChanged) {
-      const answer = this.confirmLeave('Перезагуизть сайт?')
-      console.log(answer)
-      answer ? next() : next(false)
+      const answer = this.confirmLeave("Перезагуизть сайт?");
+      console.log(answer);
+      answer ? next() : next(false);
     } else {
-      next()
+      next();
     }
   }
 };

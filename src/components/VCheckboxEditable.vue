@@ -24,14 +24,14 @@
 
     <div class="edit-block">
       <transition name="fade">
-      <div class="edit-buttons" v-if="!edit">
-        <edit-button @edit="editItem" />
-        <decline-button @decline="deleteItem" />
-      </div>
-      <div class="edit-confirm" v-else>
-        <ConfirmButton @confirm="confirmEdit" />
-<!--        <DeclineButton @decline="declineEdit" />-->
-      </div>
+        <div class="edit-buttons" v-if="!edit">
+          <edit-button @edit="editItem" />
+          <decline-button @decline="deleteItem" />
+        </div>
+        <div class="edit-confirm" v-else>
+          <ConfirmButton @confirm="confirmEdit" />
+          <!--        <DeclineButton @decline="declineEdit" />-->
+        </div>
       </transition>
     </div>
   </div>

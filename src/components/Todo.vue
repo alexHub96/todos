@@ -341,5 +341,5 @@ export default {
     }
   }
 }
-  @import "src/scss/_parts/transitions";
+@import "src/scss/_parts/transitions";
 </style>

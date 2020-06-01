@@ -1,7 +1,11 @@
 <template>
   <div class="home">
     <transition-group name="list">
-      <Card class="mb-10" v-for="todoCard in todoCards" :key="'card-'+todoCard.cardId">
+      <Card
+        class="mb-10"
+        v-for="todoCard in todoCards"
+        :key="'card-' + todoCard.cardId"
+      >
         <Todo :todos-card="todoCard" :toggle-disabled="true" />
         <div class="edit-buttons mt-10">
           <router-link
@@ -10,21 +14,25 @@
           >
             <edit-button text="Редактировать" />
           </router-link>
-          <decline-button class="text-no-decoration" text="Удалить"  @decline="deleteTaskList(todoCard.cardId)" />
+          <decline-button
+            class="text-no-decoration"
+            text="Удалить"
+            @decline="deleteTaskList(todoCard.cardId)"
+          />
         </div>
       </Card>
     </transition-group>
-    <Card >
+    <Card>
       <AddButton text="Добавить список" @addItem="addTaskList" />
     </Card>
     <popup :show-popup="popupState" @close="decline">
-    <div class="confirm-popup-wrapper">
-      <h2 style="text-align: center">Подтвердите удаление</h2>
-      <div class="todo-confirm">
-        <ConfirmButton text="Принять" @confirm="confirmDelete" />
-        <DeclineButton text="Отменить" @decline="decline" />
+      <div class="confirm-popup-wrapper">
+        <h2 style="text-align: center">Подтвердите удаление</h2>
+        <div class="todo-confirm">
+          <ConfirmButton text="Принять" @confirm="confirmDelete" />
+          <DeclineButton text="Отменить" @decline="decline" />
+        </div>
       </div>
-    </div>
     </popup>
   </div>
 </template>
@@ -112,7 +120,7 @@ export default {
   },
   methods: {
     addTaskList() {
-      const curLen = this.todoCards.length
+      const curLen = this.todoCards.length;
       this.todoCards.push({
         header: "New Header",
         cardId: curLen,
@@ -125,18 +133,20 @@ export default {
         ]
       });
     },
-    deleteTaskList(id){
+    deleteTaskList(id) {
       this.selectedTasklist = id;
       this.togglePopup(true);
     },
-    confirmDelete(){
-      this.todoCards = this.todoCards.filter(item => item.cardId !== this.selectedTasklist);
+    confirmDelete() {
+      this.todoCards = this.todoCards.filter(
+        item => item.cardId !== this.selectedTasklist
+      );
       this.togglePopup(false);
     },
-    decline(){
+    decline() {
       this.togglePopup(false);
     },
-    togglePopup(state){
+    togglePopup(state) {
       this.popupState = state;
     }
   }
