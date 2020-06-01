@@ -62,14 +62,9 @@
       </transition>
     </div>
 
-    <popup :show-popup="showPopup" @close="declineCardEdit">
-      <div class="confirm-popup-wrapper">
-        <h2>Подтвердите действие</h2>
-        <div class="todo-confirm">
-          <ConfirmButton text="Принять" @confirm="deleteItem" />
-          <DeclineButton text="Отменить" @decline="decline" />
-        </div>
-      </div>
+    <popup :show-popup="showPopup"
+           @close="declineCardEdit">
+
     </popup>
   </div>
 </template>
@@ -117,26 +112,40 @@ export default {
       todoCardDisplayed: this.displayedItemsAmount,
       todoCardChanged: false,
       localTodos: JSON.parse(JSON.stringify(this.todosCard)),
-      tempTodoId: null
+      tempTodoId: null,
+
+      template_1:` <div class="confirm-popup-wrapper">
+        <h2>Подтвердите действие</h2>
+        <div class="todo-confirm">
+          <ConfirmButton text="Принять" @confirm="deleteItem" />
+          <DeclineButton text="Отменить" @decline="decline" />
+        </div>
+      </div>`
     };
   },
   methods: {
+
     editHeader() {
       this.editHeaderStatus = true;
       this.todoCardChanged = true;
     },
+
     confirmHeader() {
       this.editHeaderStatus = false;
     },
+
+    // updates todos list
+    // if to-do status if null - deletes it
     updateTodo(cardId, id, newStatus, newText) {
       console.log(cardId, id, newStatus, newText);
       if (newStatus === null) {
         this.tempTodoId = id;
         this.showPopup = true;
       }
-
       this.todoCardChanged = true;
     },
+
+    // add task to todolist
     addItem() {
       const newId = this.localTodos.todos.length + 1;
       this.localTodos.todos.push(
@@ -150,12 +159,18 @@ export default {
       );
       this.todoCardChanged = true;
     },
+
+    // delete tassk from todolist
     deleteItem() {
       this.showPopup = false;
       this.localTodos.todos = this.localTodos.todos.filter(
         item => item.id !== this.tempTodoId
       );
     },
+
+    // toggle amount of tasks.
+    // default task dispalyed = 2
+    // to show all tasks change todoCardDisplayed to 'all' or other string
     showAllTodos() {
       this.opened = !this.opened;
       if (typeof this.todoCardDisplayed === "string") {
@@ -164,26 +179,35 @@ export default {
         this.todoCardDisplayed = "all";
       }
     },
+
     confirmCardEdit(e) {
       this.todoCardChanged = false;
       console.log(e, "card saved");
     },
+
+    // decline card object edit
+    // returns all data to props todosCard state
     declineCardEdit(e) {
       const obj = this.todosCard;
       this.localTodos = JSON.parse(JSON.stringify(obj));
       this.todoCardChanged = false;
       console.log(e, "card edit declined");
     },
+    // closes popup preventing any data changes
     decline() {
       this.showPopup = false;
     }
   },
   computed: {
+
+    // toggles amount of displayed todos
     editTodosCardDisplayed() {
       if (typeof this.todoCardDisplayed === "string")
         return this.localTodos.todos;
       return this.localTodos.todos.slice(0, this.todoCardDisplayed);
     },
+
+    // toggles child component for simple todos view or editable
     chooseCheckboxComponent() {
       return this.editable ? "VCheckboxEditable" : "VCheckbox";
     }
