@@ -25,7 +25,9 @@ export default {
         "updateData",
         this.cardId,
         this.todo.id,
-        this.todo.isFinished === null ? this.todo.isFinished : !this.todo.isFinished,
+        this.todo.isFinished === null
+          ? this.todo.isFinished
+          : !this.todo.isFinished,
         this.todo.text
       );
     }

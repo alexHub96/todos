@@ -6,6 +6,7 @@
         :toggle-disabled="false"
         :editable="true"
         displayedItemsAmount="all"
+        @stateChange="changeStateStatus"
       />
     </Card>
   </div>
@@ -23,6 +24,7 @@ export default {
   },
   data() {
     return {
+      stateChanged: false,
       todoCards: [
         {
           header: "Header",
@@ -52,8 +54,52 @@ export default {
         }
       ]
     };
+  },
+  methods: {
+    changeStateStatus(state) {
+      this.stateChanged = state;
+    },
+    handleUnload(e) {
+      if (!this.stateChanged) {
+        return;
+      }
+      e.returnValue = this.message;
+      return this.message;
+    },
+    confirmLeave(text) {
+      return window.confirm(text);
+    }
+  },
+  mounted() {
+    window.addEventListener("beforeunload", this.handleUnload);
+  },
+  beforeDestroy() {
+    window.removeEventListener("beforeunload", this.handleUnload);
+  },
+
+  beforeRouteLeave(to, from, next) {
+    if (this.stateChanged) {
+      const answer = this.confirmLeave('Перезагуизть сайт?')
+      console.log(answer)
+      answer ? next() : next(false)
+    } else {
+      next()
+    }
   }
 };
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.confirm-popup-wrapper {
+  .todo-confirm {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-flow: wrap;
+
+    & > div {
+      margin: 10px 20px;
+    }
+  }
+}
+</style>

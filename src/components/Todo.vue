@@ -2,14 +2,19 @@
   <div>
     <div class="todos-list">
       <div class="header-block">
-        <transition name="fade" mode="out-in" @after-enter="$refs.vheader.focus()" >
+        <transition
+          name="fade"
+          mode="out-in"
+          @after-enter="$refs.vheader.focus()"
+        >
           <div class="header-inputs" v-if="!editHeaderStatus" key="fade-1">
-            <h2>{{ localTodos.header }}</h2>
-            <edit-button @edit="editHeader" />
+            <h2 class="mb-10">{{ localTodos.header }}</h2>
+            <edit-button @edit="editHeader" v-if="editable" />
           </div>
           <div class="header-inputs" v-else key="fade-2">
             <input
               type="text"
+              class="mb-10"
               v-model="localTodos.header"
               @focusout="confirmHeader"
               @keyup.enter="confirmHeader"
@@ -55,22 +60,35 @@
             <ConfirmButton text="Сохранить" @confirm="confirmCardEdit" />
             <DeclineButton
               text="Отменить изменения"
-              @decline="declineCardEdit"
+              @decline="declineEditPopup"
             />
           </div>
         </div>
       </transition>
     </div>
 
-    <popup :show-popup="showPopup"
-           @close="declineCardEdit">
-
+    <popup :show-popup="showPopup" @close="decline">
+      <div class="confirm-popup-wrapper">
+        <h2>Подтвердите удаление</h2>
+        <div class="todo-confirm">
+          <ConfirmButton text="Принять" @confirm="deleteItem" />
+          <DeclineButton text="Отменить" @decline="decline" />
+        </div>
+      </div>
+    </popup>
+    <popup :show-popup="showPopup_2" @close="decline">
+      <div class="confirm-popup-wrapper">
+        <h2>Подтвердите отмену изменений</h2>
+        <div class="todo-confirm">
+          <ConfirmButton text="Принять" @confirm="declineCardEdit" />
+          <DeclineButton text="Отменить" @decline="decline" />
+        </div>
+      </div>
     </popup>
   </div>
 </template>
 
 <script>
-
 const Card = () => import("@/components/Card");
 const Popup = () => import("@/components/Popup");
 const AddButton = () => import("@/components/buttons/AddButton");
@@ -106,28 +124,25 @@ export default {
   },
   data() {
     return {
-      opened: false,
-      showPopup: false,
-      editHeaderStatus: false,
-      todoCardDisplayed: this.displayedItemsAmount,
-      todoCardChanged: false,
-      localTodos: JSON.parse(JSON.stringify(this.todosCard)),
-      tempTodoId: null,
-
-      template_1:` <div class="confirm-popup-wrapper">
-        <h2>Подтвердите действие</h2>
-        <div class="todo-confirm">
-          <ConfirmButton text="Принять" @confirm="deleteItem" />
-          <DeclineButton text="Отменить" @decline="decline" />
-        </div>
-      </div>`
+      opened: false, // displayed to-do state toggle ('all'/number)
+      showPopup: false, // popup state (delete item)
+      showPopup_2: false, // popup state (revert all data changes)
+      editHeaderStatus: false, // header display/edit toggle
+      todoCardDisplayed: this.displayedItemsAmount, // amount of displayed to-do items IF NUT ALL
+      todoCardChanged: false, // data in to-do list changed toggle
+      localTodos: JSON.parse(JSON.stringify(this.todosCard)), // local copy of object passed as prop todosCard
+      localTodos_2: JSON.parse(JSON.stringify(this.todosCard)), // local copy of object passed as prop todosCard
+      tempTodoId: null // var for storing task id (used to delete item from list)
     };
   },
   methods: {
-
+    changeTodoStateStatus(newStatus) {
+      this.todoCardChanged = newStatus;
+      this.$emit("stateChange", newStatus);
+    },
     editHeader() {
       this.editHeaderStatus = true;
-      this.todoCardChanged = true;
+      this.changeTodoStateStatus(true);
     },
 
     confirmHeader() {
@@ -136,13 +151,12 @@ export default {
 
     // updates todos list
     // if to-do status if null - deletes it
-    updateTodo(cardId, id, newStatus, newText) {
-      console.log(cardId, id, newStatus, newText);
+    updateTodo(cardId, id, newStatus) {
       if (newStatus === null) {
         this.tempTodoId = id;
         this.showPopup = true;
       }
-      this.todoCardChanged = true;
+      this.changeTodoStateStatus(true);
     },
 
     // add task to todolist
@@ -157,7 +171,7 @@ export default {
           })
         )
       );
-      this.todoCardChanged = true;
+      this.changeTodoStateStatus(true);
     },
 
     // delete tassk from todolist
@@ -180,26 +194,32 @@ export default {
       }
     },
 
-    confirmCardEdit(e) {
-      this.todoCardChanged = false;
-      console.log(e, "card saved");
+    confirmCardEdit() {
+      const obj = this.localTodos;
+      this.localTodos_2 = JSON.parse(JSON.stringify(obj));
+      this.changeTodoStateStatus(false);
     },
 
     // decline card object edit
     // returns all data to props todosCard state
-    declineCardEdit(e) {
+    declineCardEdit() {
       const obj = this.todosCard;
       this.localTodos = JSON.parse(JSON.stringify(obj));
-      this.todoCardChanged = false;
-      console.log(e, "card edit declined");
+      this.changeTodoStateStatus(false);
+      this.showPopup_2 = false;
     },
+
+    declineEditPopup() {
+      this.showPopup_2 = true;
+    },
+
     // closes popup preventing any data changes
     decline() {
       this.showPopup = false;
+      this.showPopup_2 = false;
     }
   },
   computed: {
-
     // toggles amount of displayed todos
     editTodosCardDisplayed() {
       if (typeof this.todoCardDisplayed === "string")
@@ -216,13 +236,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.mt-10 {
-  margin-top: 10px;
-}
-
 .header-block {
   h2 {
-    margin: 0;
+    margin-top: 0;
     font-size: 30px;
     height: 30px;
     font-weight: normal;
@@ -265,6 +281,7 @@ export default {
     color: lightgray;
     background: lightgray;
     height: 1px;
+    margin: 20px 0;
   }
 
   .arrow {
@@ -297,26 +314,6 @@ export default {
   }
 }
 
-.list {
-  &-enter-active,
-  &-leave-active {
-    transition: opacity 0.3s, max-height 0.3s cubic-bezier(0, 1.05, 0, 1);
-    overflow: hidden;
-  }
-
-  &-enter,
-  &-leave-to {
-    opacity: 0;
-    max-height: 0;
-  }
-
-  &-leave,
-  &-enter-to {
-    opacity: 1;
-    max-height: 4000px;
-  }
-}
-
 .todo-confirm {
   display: flex;
   align-items: center;
@@ -332,44 +329,6 @@ export default {
   }
 }
 
-.fade {
-  &-enter-active,
-  &-leave-active {
-    transition: opacity 0.3s;
-    overflow: hidden;
-  }
-
-  &-enter,
-  &-leave-to {
-    opacity: 0;
-  }
-
-  &-leave,
-  &-enter-to {
-    opacity: 1;
-  }
-}
-
-.conf {
-  &-enter-active,
-  &-leave-active {
-    transition: opacity 0.3s, max-height 0.3s;
-    overflow: hidden;
-  }
-
-  &-enter,
-  &-leave-to {
-    opacity: 0;
-    max-height: 0;
-  }
-
-  &-leave,
-  &-enter-to {
-    opacity: 1;
-    max-height: 100px;
-  }
-}
-
 .confirm-popup-wrapper {
   .todo-confirm {
     display: flex;
@@ -382,4 +341,5 @@ export default {
     }
   }
 }
+  @import "src/scss/_parts/transitions";
 </style>

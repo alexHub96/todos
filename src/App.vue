@@ -18,7 +18,18 @@ body *:after {
   font-family: "Roboto", sans-serif;
 }
 
+.mt-10 {
+  margin-top: 10px;
+}
 .mb-10 {
   margin-bottom: 10px;
+}
+
+.text-no-decoration {
+  text-decoration: none;
+}
+
+.c-black {
+  color: black;
 }
 </style>

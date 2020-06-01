@@ -12,9 +12,13 @@ const routes = [
     component: Home
   },
   {
-    path: "/edit",
+    path: "/edit/:id",
     name: "Edit",
     component: Edit
+  },
+  {
+    path: "/*",
+    redirect: { name: "Home" }
   }
 ];
 

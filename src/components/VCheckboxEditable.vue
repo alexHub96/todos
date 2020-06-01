@@ -21,15 +21,18 @@
         />
       </label>
     </div>
+
     <div class="edit-block">
+      <transition name="fade">
       <div class="edit-buttons" v-if="!edit">
         <edit-button @edit="editItem" />
         <decline-button @decline="deleteItem" />
       </div>
       <div class="edit-confirm" v-else>
         <ConfirmButton @confirm="confirmEdit" />
-        <DeclineButton @decline="declineEdit" />
+<!--        <DeclineButton @decline="declineEdit" />-->
       </div>
+      </transition>
     </div>
   </div>
 </template>
@@ -54,33 +57,17 @@ export default {
     };
   },
   methods: {
-    editItem(e) {
+    editItem() {
       this.edit = true;
       this.$nextTick(() => this.$refs.input.focus());
-      console.log(e, "edit item");
     },
-    deleteItem(e) {
+    deleteItem() {
       this.todo.isFinished = null;
       this.updateData();
-      console.log(e, "delete item");
     },
-    declineEdit(e) {
-      console.log(e, "declined");
-    },
-    confirmEdit(e) {
+    confirmEdit() {
       this.edit = false;
       this.updateData();
-      console.log(e, "confirmed");
-    }
-  },
-  beforeRouteLeave(to, from, next) {
-    const answer = window.confirm(
-      "Do you really want to leave? you have unsaved changes!"
-    );
-    if (answer) {
-      next();
-    } else {
-      next(false);
     }
   }
 };
@@ -119,4 +106,5 @@ export default {
     outline: none;
   }
 }
+@import "src/scss/_parts/transitions";
 </style>
