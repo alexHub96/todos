@@ -1,8 +1,13 @@
 <template>
   <div class="edit">
-    <Card class="mb-10" v-for="todoCard in todoCards" :key="todoCard.cardId">
+    <Card class="mb-10">
+      <router-link to="/">
+          <h3>Домой</h3>
+      </router-link>
+    </Card>
+    <Card class="mb-10" :key="todoCards.cardId">
       <Todo
-        :todos-card="todoCard"
+        :todos-card="todoCards"
         :toggle-disabled="false"
         :editable="true"
         displayedItemsAmount="all"
@@ -25,34 +30,7 @@ export default {
   data() {
     return {
       stateChanged: false,
-      todoCards: [
-        {
-          header: "Header",
-          cardId: 1,
-          todos: [
-            {
-              id: 1,
-              isFinished: true,
-              text: "todo text"
-            },
-            {
-              id: 2,
-              isFinished: false,
-              text: "todo text"
-            },
-            {
-              id: 3,
-              isFinished: false,
-              text: "todo text"
-            },
-            {
-              id: 4,
-              isFinished: false,
-              text: "todo text"
-            }
-          ]
-        }
-      ]
+      todoCards: null
     };
   },
   methods: {
@@ -72,6 +50,11 @@ export default {
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleUnload);
+    console.log('query',this.$route.params)
+    console.log('id',this.$route.params.id)
+    this.$API.fetchTaskListById(this.$route.params.id).then(res => {
+      this.todoCards = res[0];
+    });
   },
   beforeDestroy() {
     window.removeEventListener("beforeunload", this.handleUnload);

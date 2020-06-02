@@ -197,6 +197,7 @@ export default {
     confirmCardEdit() {
       const obj = this.localTodos;
       this.localTodos_2 = JSON.parse(JSON.stringify(obj));
+      this.$API.editTaskList(obj)
       this.changeTodoStateStatus(false);
     },
 

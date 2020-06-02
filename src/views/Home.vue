@@ -47,9 +47,7 @@ import DeclineButton from "@/components/buttons/DeclineButton";
 import Popup from "@/components/Popup";
 import ConfirmButton from "@/components/buttons/ConfirmButton";
 
-import { fetchAllTaskLists } from "@/router/requests";
 
-// import axios from "axios";
 
 export default {
   name: "Home",
@@ -66,67 +64,14 @@ export default {
     return {
       popupState: false,
       selectedTasklist: null,
-      // todoCards: [
-      //   {
-      //     header: "Header",
-      //     cardId: 1,
-      //     todos: [
-      //       {
-      //         id: 1,
-      //         isFinished: true,
-      //         text: "todo text"
-      //       },
-      //       {
-      //         id: 2,
-      //         isFinished: false,
-      //         text: "todo text"
-      //       },
-      //       {
-      //         id: 3,
-      //         isFinished: false,
-      //         text: "todo text"
-      //       },
-      //       {
-      //         id: 4,
-      //         isFinished: false,
-      //         text: "todo text"
-      //       }
-      //     ]
-      //   },
-      //   {
-      //     header: "Header",
-      //     cardId: 2,
-      //     todos: [
-      //       {
-      //         id: 1,
-      //         isFinished: true,
-      //         text: "todo text"
-      //       },
-      //       {
-      //         id: 2,
-      //         isFinished: false,
-      //         text: "todo text"
-      //       },
-      //       {
-      //         id: 3,
-      //         isFinished: false,
-      //         text: "todo text"
-      //       },
-      //       {
-      //         id: 4,
-      //         isFinished: false,
-      //         text: "todo text"
-      //       }
-      //     ]
-      //   }
-      // ]
       todoCards: null
     };
   },
   methods: {
     addTaskList() {
+      // плохая идея по поводу индексов, но переделывать уже не буду
       const curLen = this.todoCards.length;
-      this.todoCards.push({
+      const obj = {
         header: "New Header",
         cardId: curLen,
         todos: [
@@ -136,7 +81,9 @@ export default {
             text: "todo text"
           }
         ]
-      });
+      }
+      this.$API.addTaskList(obj)
+      this.todoCards.push(obj);
     },
     deleteTaskList(id) {
       this.selectedTasklist = id;
@@ -146,6 +93,7 @@ export default {
       this.todoCards = this.todoCards.filter(
         item => item.cardId !== this.selectedTasklist
       );
+      this.$API.deleteTaskListById(this.selectedTasklist)
       this.togglePopup(false);
     },
     decline() {
@@ -153,21 +101,12 @@ export default {
     },
     togglePopup(state) {
       this.popupState = state;
-    },
-
-    // fetchAllTaskLists() {
-    //   return axios
-    //           .get("/api/todo")
-    //           .then(response => {return response.data})
-    //           .catch(error => console.log(error))
-    //
-    // },
-
+    }
   },
   mounted() {
-    fetchAllTaskLists().then(res => {
-      this.todoCards = res
-    })
+    this.$API.fetchAllTaskLists().then(res => {
+      this.todoCards = res;
+    });
   }
 };
 </script>

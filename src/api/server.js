@@ -1,8 +1,8 @@
 const express = require("../node_modules/express");
 const app = express();
 const bodyParser = require("../node_modules/body-parser");
-app.use('/css', express.static('css'))
-app.use('/js', express.static('js'))
+app.use("/css", express.static("css"));
+app.use("/js", express.static("js"));
 app.use(bodyParser.json()); // to support JSON-encoded bodies
 app.use(
   bodyParser.urlencoded({
@@ -44,6 +44,10 @@ app.put("/api/todo", (req, res) => {
 app.delete("/api/todo/:id", (req, res) => {
   deleteRecord(parseInt(req.params.id));
   res.send("Got a DELETE request at /api/todo/" + req.params.id);
+});
+
+app.get('*', (req, res) => {
+  res.sendFile("index.html", { root: "./" });
 });
 
 app.listen(5000, () => {
