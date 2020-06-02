@@ -15,6 +15,12 @@ npm run serve
 npm run build
 ```
 
+### Compiles and minifies for production and push them to docker container
+```
+npm run build && docker-compose up -d
+```
+
+
 ### Lints and fixes files
 ```
 npm run lint
