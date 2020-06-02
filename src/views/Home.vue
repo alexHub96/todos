@@ -47,8 +47,6 @@ import DeclineButton from "@/components/buttons/DeclineButton";
 import Popup from "@/components/Popup";
 import ConfirmButton from "@/components/buttons/ConfirmButton";
 
-
-
 export default {
   name: "Home",
   components: {
@@ -81,8 +79,8 @@ export default {
             text: "todo text"
           }
         ]
-      }
-      this.$API.addTaskList(obj)
+      };
+      this.$API.addTaskList(obj);
       this.todoCards.push(obj);
     },
     deleteTaskList(id) {
@@ -93,7 +91,7 @@ export default {
       this.todoCards = this.todoCards.filter(
         item => item.cardId !== this.selectedTasklist
       );
-      this.$API.deleteTaskListById(this.selectedTasklist)
+      this.$API.deleteTaskListById(this.selectedTasklist);
       this.togglePopup(false);
     },
     decline() {

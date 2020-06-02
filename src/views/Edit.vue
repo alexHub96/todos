@@ -2,7 +2,7 @@
   <div class="edit">
     <Card class="mb-10">
       <router-link to="/">
-          <h3>Домой</h3>
+        <h3>Домой</h3>
       </router-link>
     </Card>
     <Card class="mb-10" :key="todoCards.cardId">
@@ -50,8 +50,8 @@ export default {
   },
   mounted() {
     window.addEventListener("beforeunload", this.handleUnload);
-    console.log('query',this.$route.params)
-    console.log('id',this.$route.params.id)
+    console.log("query", this.$route.params);
+    console.log("id", this.$route.params.id);
     this.$API.fetchTaskListById(this.$route.params.id).then(res => {
       this.todoCards = res[0];
     });
