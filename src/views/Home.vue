@@ -47,6 +47,10 @@ import DeclineButton from "@/components/buttons/DeclineButton";
 import Popup from "@/components/Popup";
 import ConfirmButton from "@/components/buttons/ConfirmButton";
 
+import { fetchAllTaskLists } from "@/router/requests";
+
+// import axios from "axios";
+
 export default {
   name: "Home",
   components: {
@@ -62,60 +66,61 @@ export default {
     return {
       popupState: false,
       selectedTasklist: null,
-      todoCards: [
-        {
-          header: "Header",
-          cardId: 1,
-          todos: [
-            {
-              id: 1,
-              isFinished: true,
-              text: "todo text"
-            },
-            {
-              id: 2,
-              isFinished: false,
-              text: "todo text"
-            },
-            {
-              id: 3,
-              isFinished: false,
-              text: "todo text"
-            },
-            {
-              id: 4,
-              isFinished: false,
-              text: "todo text"
-            }
-          ]
-        },
-        {
-          header: "Header",
-          cardId: 2,
-          todos: [
-            {
-              id: 1,
-              isFinished: true,
-              text: "todo text"
-            },
-            {
-              id: 2,
-              isFinished: false,
-              text: "todo text"
-            },
-            {
-              id: 3,
-              isFinished: false,
-              text: "todo text"
-            },
-            {
-              id: 4,
-              isFinished: false,
-              text: "todo text"
-            }
-          ]
-        }
-      ]
+      // todoCards: [
+      //   {
+      //     header: "Header",
+      //     cardId: 1,
+      //     todos: [
+      //       {
+      //         id: 1,
+      //         isFinished: true,
+      //         text: "todo text"
+      //       },
+      //       {
+      //         id: 2,
+      //         isFinished: false,
+      //         text: "todo text"
+      //       },
+      //       {
+      //         id: 3,
+      //         isFinished: false,
+      //         text: "todo text"
+      //       },
+      //       {
+      //         id: 4,
+      //         isFinished: false,
+      //         text: "todo text"
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     header: "Header",
+      //     cardId: 2,
+      //     todos: [
+      //       {
+      //         id: 1,
+      //         isFinished: true,
+      //         text: "todo text"
+      //       },
+      //       {
+      //         id: 2,
+      //         isFinished: false,
+      //         text: "todo text"
+      //       },
+      //       {
+      //         id: 3,
+      //         isFinished: false,
+      //         text: "todo text"
+      //       },
+      //       {
+      //         id: 4,
+      //         isFinished: false,
+      //         text: "todo text"
+      //       }
+      //     ]
+      //   }
+      // ]
+      todoCards: null
     };
   },
   methods: {
@@ -148,7 +153,21 @@ export default {
     },
     togglePopup(state) {
       this.popupState = state;
-    }
+    },
+
+    // fetchAllTaskLists() {
+    //   return axios
+    //           .get("/api/todo")
+    //           .then(response => {return response.data})
+    //           .catch(error => console.log(error))
+    //
+    // },
+
+  },
+  mounted() {
+    fetchAllTaskLists().then(res => {
+      this.todoCards = res
+    })
   }
 };
 </script>
