@@ -26,13 +26,7 @@
       <AddButton text="Добавить список" @addItem="addTaskList" />
     </Card>
     <popup :show-popup="popupState" @close="decline">
-      <div class="confirm-popup-wrapper">
-        <h2 style="text-align: center">Подтвердите удаление</h2>
-        <div class="todo-confirm">
-          <ConfirmButton text="Принять" @confirm="confirmDelete" />
-          <DeclineButton text="Отменить" @decline="decline" />
-        </div>
-      </div>
+      <component :is="popup_comp"/>
     </popup>
   </div>
 </template>
@@ -46,11 +40,33 @@ import EditButton from "@/components/buttons/EditButton";
 import DeclineButton from "@/components/buttons/DeclineButton";
 import Popup from "@/components/Popup";
 import ConfirmButton from "@/components/buttons/ConfirmButton";
+import Vue from 'vue'
+const eventBus = new Vue();
+
+const confirmDelete = Vue.component('confirmDelete',{
+  components: {
+    ConfirmButton,
+    DeclineButton,
+  },
+  template:`
+     <div class="confirm-popup-wrapper">
+        <h2 style="text-align: center">Подтвердите удаление</h2>
+        <div class="todo-confirm">
+          <ConfirmButton text="Принять" @confirm="confirmDelete" />
+          <DeclineButton text="Отменить" @decline="decline" />
+        </div>
+      </div>`,
+  methods:{
+    confirmDelete() {},
+    decline(){
+      eventBus.$emit('decline')
+    },
+  }
+})
 
 export default {
   name: "Home",
   components: {
-    ConfirmButton,
     Popup,
     DeclineButton,
     EditButton,
@@ -62,7 +78,33 @@ export default {
     return {
       popupState: false,
       selectedTasklist: null,
-      todoCards: null
+      popup_comp: confirmDelete,
+      todoCards: [{
+        "header": "Header",
+        "cardId": 2,
+        "todos": [
+          {
+            "id": 1,
+            "isFinished": true,
+            "text": "todo text"
+          },
+          {
+            "id": 2,
+            "isFinished": false,
+            "text": "todo text"
+          },
+          {
+            "id": 3,
+            "isFinished": false,
+            "text": "todo text"
+          },
+          {
+            "id": 4,
+            "isFinished": false,
+            "text": "todo text"
+          }
+        ]
+      }],
     };
   },
   methods: {
@@ -101,10 +143,17 @@ export default {
       this.popupState = state;
     }
   },
+  created(){
+    eventBus.$on('decline', () => {
+      console.log('asda')
+      this.decline()
+    });
+  },
   mounted() {
     this.$API.fetchAllTaskLists().then(res => {
-      this.todoCards = res;
+      if(res !== undefined) this.todoCards = res;
     });
+
   }
 };
 </script>
